@@ -49,7 +49,8 @@ fn update(_app: &App, m: &mut Model, _update: Update) {
             * m.m2
             * (m.v2 * m.v2 * m.p2.length
                 + m.v1 * m.v1 * m.p1.length * (m.p1.angle - m.p2.angle).cos());
-    let den = m.p1.length * (2.0 * m.m1 + m.m2 - m.m2 * (2.0 * m.p1.angle - 2.0 * m.p2.angle).cos());
+    let den =
+        m.p1.length * (2.0 * m.m1 + m.m2 - m.m2 * (2.0 * m.p1.angle - 2.0 * m.p2.angle).cos());
     m.a1 = num / den;
 
     let num = 2.0
@@ -57,7 +58,8 @@ fn update(_app: &App, m: &mut Model, _update: Update) {
         * (m.v1 * m.v1 * m.p1.length * (m.m1 + m.m2)
             + m.gravity * (m.m1 + m.m2) * m.p1.angle.cos()
             + m.v2 * m.v2 * m.p2.length * m.m2 * (m.p1.angle - m.p2.angle).cos());
-    let den = m.p2.length * (2.0 * m.m1 + m.m2 - m.m2 * (2.0 * m.p1.angle - 2.0 * m.p2.angle).cos());
+    let den =
+        m.p2.length * (2.0 * m.m1 + m.m2 - m.m2 * (2.0 * m.p1.angle - 2.0 * m.p2.angle).cos());
     m.a2 = num / den;
 
     m.v1 += m.a1;
