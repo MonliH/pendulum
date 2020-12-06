@@ -27,8 +27,8 @@ fn main() {
 
 fn model(_app: &App) -> Model {
     Model {
-        p1: Polar::new(300.0, 0.0),
-        p2: Polar::new(300.0, PI/2.0),
+        p1: Polar::new(200.0, PI / 2.0),
+        p2: Polar::new(200.0, PI / 2.0),
 
         m1: 40.0,
         m2: 40.0,
@@ -39,7 +39,7 @@ fn model(_app: &App) -> Model {
         v1: 0.0,
         v2: 0.0,
 
-        dampening: 0.0001,
+        dampening: 0.00001,
 
         gravity: 1.0,
     }
@@ -84,25 +84,24 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .mid_top_of(win)
         .shift(offset1);
 
-    draw.ellipse().xy(b1.xy()).wh(b1.wh()).color(BLACK);
-
     let offset2 = model.p2.to_xy().to_nannou() + offset1;
     let b2 = Rect::from_w_h(model.m2, model.m2)
         .mid_top_of(win)
         .shift(offset2);
 
-    draw.ellipse().xy(b2.xy()).wh(b2.wh()).color(BLACK);
-
     draw.line()
         .start(win.mid_top())
         .end(b1.xy())
         .stroke_weight(3.0)
-        .color(BLACK);
+        .color(GRAY);
     draw.line()
         .start(b1.xy())
         .end(b2.xy())
         .stroke_weight(3.0)
-        .color(BLACK);
+        .color(GRAY);
+
+    draw.ellipse().xy(b1.xy()).wh(b1.wh()).color(BLACK);
+    draw.ellipse().xy(b2.xy()).wh(b2.wh()).color(BLACK);
 
     draw.to_frame(app, &frame).unwrap();
 }
