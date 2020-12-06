@@ -16,6 +16,8 @@ struct Model {
     v1: f32,
     v2: f32,
 
+    dampening: f32,
+
     gravity: f32,
 }
 
@@ -25,17 +27,19 @@ fn main() {
 
 fn model(_app: &App) -> Model {
     Model {
-        p1: Polar::new(200.0, PI),
-        p2: Polar::new(200.0, PI / 2.0),
+        p1: Polar::new(300.0, 0.0),
+        p2: Polar::new(300.0, PI/2.0),
 
-        m1: 20.0,
-        m2: 20.0,
+        m1: 40.0,
+        m2: 40.0,
 
         a1: 0.0,
         a2: 0.0,
 
         v1: 0.0,
         v2: 0.0,
+
+        dampening: 0.0001,
 
         gravity: 1.0,
     }
@@ -66,12 +70,14 @@ fn update(_app: &App, m: &mut Model, _update: Update) {
     m.v2 += m.a2;
     m.p1.angle += m.v1;
     m.p2.angle += m.v2;
+    m.v1 *= 1.0 - m.dampening;
+    m.v2 *= 1.0 - m.dampening;
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
     let draw = app.draw();
     draw.background().color(WHITE);
-    let win = app.window_rect();
+    let win = app.window_rect().pad_top(100.0);
 
     let offset1 = model.p1.to_xy().to_nannou();
     let b1 = Rect::from_w_h(model.m1, model.m1)

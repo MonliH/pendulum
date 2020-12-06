@@ -5,10 +5,6 @@ pub struct XY {
 }
 
 impl XY {
-    pub fn new(x: f32, y: f32) -> Self {
-        Self { x, y }
-    }
-
     pub fn round(mut self) -> Self {
         self.x = self.x.round();
         self.y = self.y.round();
@@ -45,5 +41,5 @@ impl Polar {
 fn test_polar() {
     use std::f32::consts::PI;
     let polar = Polar::new(1.0, PI / 2.0);
-    assert_eq!(XY::new(1.0, 0.0), polar.to_xy().round());
+    assert_eq!(XY{ x: 1.0, y: 0.0 }, polar.to_xy().round());
 }
