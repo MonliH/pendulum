@@ -5,9 +5,16 @@ use nannou::prelude::*;
 
 struct Model {
     p1: Polar,
-    m1: f32,
     p2: Polar,
+
+    m1: f32,
     m2: f32,
+
+    a1: f32,
+    a2: f32,
+
+    v1: f32,
+    v2: f32,
 }
 
 fn main() {
@@ -17,15 +24,25 @@ fn main() {
 fn model(_app: &App) -> Model {
     Model {
         p1: Polar::new(200.0, PI),
-        m1: 20.0,
         p2: Polar::new(200.0, PI/2.0),
+
+        m1: 20.0,
         m2: 20.0,
+
+        a1: -0.01,
+        a2: -0.01,
+
+        v1: 0.0,
+        v2: 0.0,
     }
 }
 
-fn update(_app: &App, model: &mut Model, _update: Update) {
-    model.p1.angle += 0.01;
-    model.p2.angle -= 0.01;
+fn update(_app: &App, m: &mut Model, _update: Update) {
+    m.p1.angle += m.v1;
+    m.p2.angle += m.v2;
+    
+    m.v1 += m.a1;
+    m.v2 += m.a2;
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
