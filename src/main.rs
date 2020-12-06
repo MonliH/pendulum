@@ -15,6 +15,8 @@ struct Model {
 
     v1: f32,
     v2: f32,
+
+    gravity: f32,
 }
 
 fn main() {
@@ -24,25 +26,44 @@ fn main() {
 fn model(_app: &App) -> Model {
     Model {
         p1: Polar::new(200.0, PI),
-        p2: Polar::new(200.0, PI/2.0),
+        p2: Polar::new(200.0, PI / 2.0),
 
         m1: 20.0,
         m2: 20.0,
 
-        a1: -0.01,
-        a2: -0.01,
+        a1: 0.0,
+        a2: 0.0,
 
         v1: 0.0,
         v2: 0.0,
+
+        gravity: 1.0,
     }
 }
 
 fn update(_app: &App, m: &mut Model, _update: Update) {
-    m.p1.angle += m.v1;
-    m.p2.angle += m.v2;
-    
+    let num = -m.gravity * (2.0 * m.m1 + m.m2) * m.p1.angle.sin()
+        - m.m2 * m.gravity * (m.p1.angle - 2.0 * m.p2.angle).sin()
+        - 2.0
+            * (m.p1.angle - m.p2.angle).sin()
+            * m.m2
+            * (m.v2 * m.v2 * m.p2.length
+                + m.v1 * m.v1 * m.p1.length * (m.p1.angle - m.p2.angle).cos());
+    let den = m.p1.length * (2.0 * m.m1 + m.m2 - m.m2 * (2.0 * m.p1.angle - 2.0 * m.p2.angle));
+    m.a1 = num / den;
+
+    let num = 2.0
+        * (m.p1.angle - m.p2.angle).sin()
+        * (m.v1 * m.v1 * m.p1.length * (m.m1 + m.m2)
+            + m.gravity * (m.m1 + m.m2) * m.p1.angle.cos()
+            + m.v2 * m.v2 * m.p2.length * m.m2 * (m.p1.angle - m.p2.angle));
+    let den = m.p2.length * (2.0 * m.m1 + m.m2 - m.m2 * (2.0 * m.p1.angle - 2.0 * m.p2.angle));
+    m.a2 = num / den;
+
     m.v1 += m.a1;
     m.v2 += m.a2;
+    m.p1.angle += m.v1;
+    m.p2.angle += m.v2;
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
@@ -64,8 +85,16 @@ fn view(app: &App, model: &Model, frame: Frame) {
 
     draw.ellipse().xy(b2.xy()).wh(b2.wh()).color(BLACK);
 
-    draw.line().start(win.mid_top()).end(b1.xy()).stroke_weight(3.0).color(BLACK);
-    draw.line().start(b1.xy()).end(b2.xy()).stroke_weight(3.0).color(BLACK);
+    draw.line()
+        .start(win.mid_top())
+        .end(b1.xy())
+        .stroke_weight(3.0)
+        .color(BLACK);
+    draw.line()
+        .start(b1.xy())
+        .end(b2.xy())
+        .stroke_weight(3.0)
+        .color(BLACK);
 
     draw.to_frame(app, &frame).unwrap();
 }
