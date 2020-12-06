@@ -17,8 +17,8 @@ impl XY {
 
     pub fn to_nannou(&self) -> nannou::geom::point::Point2 {
         nannou::geom::Vector2::new(
-            self.x as nannou::geom::scalar::Default,
-            self.y as nannou::geom::scalar::Default,
+            -self.x as nannou::geom::scalar::Default,
+            -self.y as nannou::geom::scalar::Default,
         )
     }
 }
