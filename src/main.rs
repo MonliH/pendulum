@@ -60,10 +60,10 @@ fn update(_app: &App, m: &mut Model, _update: Update) {
     let den = m.p2.length * (2.0 * m.m1 + m.m2 - m.m2 * (2.0 * m.p1.angle - 2.0 * m.p2.angle));
     m.a2 = num / den;
 
-    m.p1.angle += m.v1;
-    m.p2.angle += m.v2;
     m.v1 += m.a1;
     m.v2 += m.a2;
+    m.p1.angle += m.v1;
+    m.p2.angle += m.v2;
 }
 
 fn view(app: &App, model: &Model, frame: Frame) {
