@@ -5,7 +5,8 @@ pub struct XY {
 }
 
 impl XY {
-    pub fn round(mut self) -> Self {
+    #[allow(dead_code)]
+    fn round(mut self) -> Self {
         self.x = self.x.round();
         self.y = self.y.round();
         self

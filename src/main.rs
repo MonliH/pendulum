@@ -30,7 +30,7 @@ fn model(_app: &App) -> Model {
         p1: Polar::new(200.0, PI / 2.0),
         p2: Polar::new(200.0, PI / 2.0),
 
-        m1: 40.0,
+        m1: 200.0,
         m2: 40.0,
 
         a1: 0.0,
@@ -39,7 +39,7 @@ fn model(_app: &App) -> Model {
         v1: 0.0,
         v2: 0.0,
 
-        dampening: 0.00001,
+        dampening: 0.0,
 
         gravity: 1.0,
     }
@@ -84,9 +84,9 @@ fn view(app: &App, model: &Model, frame: Frame) {
         .mid_top_of(win)
         .shift(offset1);
 
-    let offset2 = model.p2.to_xy().to_nannou() + offset1;
+    let offset2 = model.p2.to_xy().to_nannou();
     let b2 = Rect::from_w_h(model.m2, model.m2)
-        .mid_top_of(win)
+        .middle_of(b1)
         .shift(offset2);
 
     draw.line()
