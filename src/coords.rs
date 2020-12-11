@@ -1,3 +1,5 @@
+use std::f32::consts::PI;
+
 #[derive(Debug, PartialEq)]
 pub struct XY {
     x: f32,
@@ -5,6 +7,9 @@ pub struct XY {
 }
 
 impl XY {
+    pub fn new(x: f32, y: f32) -> Self {
+        Self { x, y }
+    }
     #[allow(dead_code)]
     fn round(mut self) -> Self {
         self.x = self.x.round();
@@ -31,6 +36,19 @@ impl Polar {
         Self { length, angle }
     }
 
+    pub fn from_xy(xy: XY) -> Self {
+        let length = (xy.x * xy.x + xy.y * xy.y).sqrt();
+        let angle = if xy.x > 0.0 {
+            (xy.y / xy.x).atan()
+        } else if xy.x < 0.0 && xy.y > 1.0 {
+            (xy.y / xy.x + 2.0 * PI).atan()
+        } else {
+            (xy.y / xy.x + PI).atan()
+        };
+
+        Self { angle, length }
+    }
+
     pub fn to_xy(&self) -> XY {
         let x = self.angle.sin() * self.length;
         let y = self.angle.cos() * self.length;
@@ -40,7 +58,6 @@ impl Polar {
 
 #[test]
 fn test_polar() {
-    use std::f32::consts::PI;
     let polar = Polar::new(1.0, PI / 2.0);
-    assert_eq!(XY{ x: 1.0, y: 0.0 }, polar.to_xy().round());
+    assert_eq!(XY { x: 1.0, y: 0.0 }, polar.to_xy().round());
 }
