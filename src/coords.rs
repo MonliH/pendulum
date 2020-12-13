@@ -38,13 +38,7 @@ impl Polar {
 
     pub fn from_xy(xy: XY) -> Self {
         let length = (xy.x * xy.x + xy.y * xy.y).sqrt();
-        let angle = if xy.x > 0.0 {
-            (xy.y / xy.x).atan()
-        } else if xy.x < 0.0 && xy.y > 1.0 {
-            (xy.y / xy.x + 2.0 * PI).atan()
-        } else {
-            (xy.y / xy.x + PI).atan()
-        };
+        let angle = xy.y.atan2(xy.x);
 
         Self { angle, length }
     }
