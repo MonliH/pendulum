@@ -13,6 +13,7 @@ struct MouseInput {
     closer_to_p1: bool,
 
     pressed: bool,
+    frames_pressed: f32,
 }
 
 struct Model {
@@ -63,6 +64,8 @@ fn model(_app: &App) -> Model {
 
             is_original_angle: false,
             pressed: false,
+
+            frames_pressed: 0.0,
         },
     }
 }
@@ -83,6 +86,7 @@ fn update(app: &App, m: &mut Model, _update: Update) {
     let b2 = Rect::from_w_h(m.m2, m.m2).middle_of(b1).shift(offset2);
 
     if let ButtonPosition::Down(orig_pos) = app.mouse.buttons.left() {
+        m.mouse.frames_pressed += 1.0;
         if !m.mouse.is_original_angle {
             m.mouse.is_original_angle = true;
             m.mouse.p1_angle_prev = m.p1.angle;
@@ -103,6 +107,7 @@ fn update(app: &App, m: &mut Model, _update: Update) {
             let p1 = get_polar_rel_to(app.mouse.x, app.mouse.y, win_top_mid.x, win_top_mid.y);
             let orig_angle = get_polar_rel_to(orig_pos.x, orig_pos.y, win_top_mid.x, win_top_mid.y);
             m.p1.angle = m.mouse.p1_angle_prev + orig_angle.angle - p1.angle;
+            m.v1 = (orig_angle.angle - p1.angle) / m.mouse.frames_pressed;
         } else {
             m.v1 = 0.0;
             m.v2 = 0.0;
@@ -113,12 +118,14 @@ fn update(app: &App, m: &mut Model, _update: Update) {
             let p2 = get_polar_rel_to(app.mouse.x, app.mouse.y, b1.x(), b1.y());
             let orig_angle = get_polar_rel_to(orig_pos.x, orig_pos.y, b1.x(), b1.y());
             m.p2.angle = m.mouse.p2_angle_prev + orig_angle.angle - p2.angle;
+            m.v2 = (orig_angle.angle - p2.angle) / m.mouse.frames_pressed;
         }
 
         m.mouse.pressed = true;
     } else {
         m.mouse.is_original_angle = false;
         m.mouse.pressed = false;
+        m.mouse.frames_pressed = 0.0;
     }
 
     if !m.mouse.pressed {
