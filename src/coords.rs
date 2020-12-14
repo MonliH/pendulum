@@ -1,5 +1,3 @@
-use std::f32::consts::PI;
-
 #[derive(Debug, PartialEq)]
 pub struct XY {
     x: f32,
@@ -52,6 +50,7 @@ impl Polar {
 
 #[test]
 fn test_polar() {
+    use std::f32::consts::PI;
     let polar = Polar::new(1.0, PI / 2.0);
     assert_eq!(XY { x: 1.0, y: 0.0 }, polar.to_xy().round());
 }

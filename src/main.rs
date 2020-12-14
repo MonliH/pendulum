@@ -41,8 +41,8 @@ fn main() {
 
 fn model(_app: &App) -> Model {
     Model {
-        p1: Polar::new(200.0, PI / 2.0),
-        p2: Polar::new(200.0, PI / 2.0),
+        p1: Polar::new(150.0, PI / 2.0),
+        p2: Polar::new(150.0, PI / 2.0),
 
         m1: 40.0,
         m2: 40.0,
@@ -53,7 +53,7 @@ fn model(_app: &App) -> Model {
         v1: 0.0,
         v2: 0.0,
 
-        dampening: 0.0,
+        dampening: 0.0001,
         gravity: 1.0,
 
         mouse: MouseInput {
@@ -96,30 +96,26 @@ fn update(app: &App, m: &mut Model, _update: Update) {
             m.mouse.closer_to_p1 = p1_rel.length < p2_rel.length;
         }
 
-        if m.mouse.closer_to_p1 {
-            m.v1 = 0.0;
-            m.v2 = 0.0;
+        m.v1 = 0.0;
+        m.v2 = 0.0;
 
-            m.a1 = 0.0;
-            m.a2 = 0.0;
+        m.a1 = 0.0;
+        m.a2 = 0.0;
 
+        let (starting_x, starting_y, prev_angle, var_ref) = if m.mouse.closer_to_p1 {
             let win_top_mid = win.mid_top();
-            let p1 = get_polar_rel_to(app.mouse.x, app.mouse.y, win_top_mid.x, win_top_mid.y);
-            let orig_angle = get_polar_rel_to(orig_pos.x, orig_pos.y, win_top_mid.x, win_top_mid.y);
-            m.p1.angle = m.mouse.p1_angle_prev + orig_angle.angle - p1.angle;
-            m.v1 = (orig_angle.angle - p1.angle) / m.mouse.frames_pressed;
+            (
+                win_top_mid.x,
+                win_top_mid.y,
+                m.mouse.p1_angle_prev,
+                &mut m.p1.angle,
+            )
         } else {
-            m.v1 = 0.0;
-            m.v2 = 0.0;
-
-            m.a1 = 0.0;
-            m.a2 = 0.0;
-
-            let p2 = get_polar_rel_to(app.mouse.x, app.mouse.y, b1.x(), b1.y());
-            let orig_angle = get_polar_rel_to(orig_pos.x, orig_pos.y, b1.x(), b1.y());
-            m.p2.angle = m.mouse.p2_angle_prev + orig_angle.angle - p2.angle;
-            m.v2 = (orig_angle.angle - p2.angle) / m.mouse.frames_pressed;
-        }
+            (b1.x(), b1.y(), m.mouse.p2_angle_prev, &mut m.p2.angle)
+        };
+        let p = get_polar_rel_to(app.mouse.x, app.mouse.y, starting_x, starting_y);
+        let orig_angle = get_polar_rel_to(orig_pos.x, orig_pos.y, starting_x, starting_y);
+        *var_ref = prev_angle + orig_angle.angle - p.angle;
 
         m.mouse.pressed = true;
     } else {
